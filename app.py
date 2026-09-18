@@ -197,6 +197,7 @@ if st.button("Assess Osteoporosis Risk"):
         patient_processed["Age"] = scaler.transform(
             patient_processed[["Age"]]
         ).ravel()
+
         # ----------------------------------------------
         # Model prediction
         # ----------------------------------------------
@@ -274,13 +275,16 @@ if st.button("Assess Osteoporosis Risk"):
 
         try:
 
+            # ----------------------------------------------
+            # Calculate SHAP values
+            # ----------------------------------------------
+
             explainer = shap.TreeExplainer(model)
 
             shap_values = explainer.shap_values(
                 patient_processed
             )
 
-            # Handle different SHAP output formats
             if isinstance(shap_values, list):
 
                 shap_for_patient = shap_values[1][0]
@@ -288,6 +292,10 @@ if st.button("Assess Osteoporosis Risk"):
             else:
 
                 shap_for_patient = shap_values[0]
+
+            # ----------------------------------------------
+            # Create explanation dataframe
+            # ----------------------------------------------
 
             explanation_df = pd.DataFrame({
                 "Feature": model_features,
@@ -304,7 +312,10 @@ if st.button("Assess Osteoporosis Risk"):
                 ascending=False
             )
 
+            # ----------------------------------------------
             # Top contributing factors
+            # ----------------------------------------------
+
             st.subheader("Top contributing factors")
 
             top_features = explanation_df.head(5)
@@ -313,29 +324,62 @@ if st.button("Assess Osteoporosis Risk"):
 
                 feature = row["Feature"]
                 shap_value = row["SHAP Value"]
+                patient_value = row["Patient Value"]
+
+                if "_" in feature:
+
+                    base_feature, category = feature.split(
+                        "_", 1
+                    )
+
+                    if patient_value == 1:
+
+                        display_feature = (
+                            f"{base_feature}: {category}"
+                        )
+
+                    else:
+
+                        display_feature = (
+                            f"{base_feature}: "
+                            f"{category} not present"
+                        )
+
+                else:
+
+                    display_feature = feature
 
                 if shap_value > 0:
 
-                    st.write(
-                        f"🔺 **{feature}** — "
-                        f"contributed toward higher predicted risk"
+                    st.markdown(
+                        f'<span style="color:red; '
+                        f'font-size:20px;">↑</span> '
+                        f'**{display_feature}** — '
+                        f'contributed toward higher predicted risk',
+                        unsafe_allow_html=True
                     )
 
                 elif shap_value < 0:
 
-                    st.write(
-                        f"🔻 **{feature}** — "
-                        f"contributed toward lower predicted risk"
+                    st.markdown(
+                        f'<span style="color:green; '
+                        f'font-size:20px;">↓</span> '
+                        f'**{display_feature}** — '
+                        f'contributed toward lower predicted risk',
+                        unsafe_allow_html=True
                     )
 
                 else:
 
                     st.write(
-                        f"• **{feature}** — "
+                        f"• **{display_feature}** — "
                         f"minimal contribution"
                     )
 
+            # ----------------------------------------------
             # SHAP bar chart
+            # ----------------------------------------------
+
             st.subheader("Model feature contributions")
 
             chart_df = explanation_df.head(10)[
@@ -344,7 +388,7 @@ if st.button("Assess Osteoporosis Risk"):
 
             st.bar_chart(chart_df)
 
-        except Exception as e:
+        except Exception:
 
             st.warning(
                 "SHAP explanation could not be generated "
@@ -368,35 +412,44 @@ if st.button("Assess Osteoporosis Risk"):
             "determine whether a DXA scan is clinically required."
         )
 
-        # Basic prototype guidance
+        # ----------------------------------------------
+        # Prototype DXA guidance
+        # ----------------------------------------------
+
         dxa_factors = []
 
         if age >= 65:
+
             dxa_factors.append(
                 "Age ≥65 years"
             )
 
         if prior_fractures == "Yes":
+
             dxa_factors.append(
                 "History of prior fracture"
             )
 
         if family_history == "Yes":
+
             dxa_factors.append(
                 "Family history of osteoporosis"
             )
 
         if hormonal_changes == "Postmenopausal":
+
             dxa_factors.append(
                 "Postmenopausal status"
             )
 
         if body_weight == "Underweight":
+
             dxa_factors.append(
                 "Underweight status"
             )
 
         if medical_conditions == "Rheumatoid Arthritis":
+
             dxa_factors.append(
                 "Rheumatoid arthritis"
             )
@@ -409,11 +462,15 @@ if st.button("Assess Osteoporosis Risk"):
                 "patient's risk factors."
             )
 
-            st.write("Relevant factors identified:")
+            st.write(
+                "Relevant factors identified:"
+            )
 
             for factor in dxa_factors:
 
-                st.write(f"• {factor}")
+                st.write(
+                    f"• {factor}"
+                )
 
         else:
 
