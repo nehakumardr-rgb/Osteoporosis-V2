@@ -25,7 +25,7 @@ st.set_page_config(
 # Title and introduction
 # --------------------------------------------------
 
-st.title("🦴 Osteoporosis Risk Assessment")
+st.title("Osteoporosis Risk Assessment")
 
 st.write(
     "AI-based clinical decision-support tool "
