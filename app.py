@@ -58,10 +58,16 @@ gender = st.selectbox(
     ["", "Female", "Male"]
 )
 
-hormonal_changes = st.selectbox(
-    "Hormonal Changes",
-    ["", "Premenopausal", "Postmenopausal"]
-)
+if gender == "Female":
+
+    hormonal_changes = st.selectbox(
+        "Hormonal Changes",
+        ["", "Premenopausal", "Postmenopausal"]
+    )
+
+else:
+
+    hormonal_changes = "Not Applicable"
 
 family_history = st.selectbox(
     "Family History of Osteoporosis",
