@@ -135,13 +135,56 @@ if st.button("Assess Osteoporosis Risk"):
         prior_fractures
     ]
 
-    if age is None or any(field == "" for field in required_fields):
+    incomplete_fields = []
 
-        st.warning(
-            "Please complete all patient fields before assessing risk."
-        )
+if age is None:
+    incomplete_fields.append("Age")
 
-    else:
+if gender == "":
+    incomplete_fields.append("Gender")
+
+if hormonal_changes == "":
+    incomplete_fields.append("Hormonal Changes")
+
+if family_history == "":
+    incomplete_fields.append("Family History")
+
+if body_weight == "":
+    incomplete_fields.append("Body Weight")
+
+if calcium == "":
+    incomplete_fields.append("Calcium Intake")
+
+if vitamin_d == "":
+    incomplete_fields.append("Vitamin D Intake")
+
+if physical_activity == "":
+    incomplete_fields.append("Physical Activity")
+
+if smoking == "":
+    incomplete_fields.append("Smoking")
+
+if alcohol == "":
+    incomplete_fields.append("Alcohol Consumption")
+
+if medical_conditions == "":
+    incomplete_fields.append("Medical Conditions")
+
+if prior_fractures == "":
+    incomplete_fields.append("Prior Fractures")
+
+if incomplete_fields:
+
+    st.warning(
+        "Please complete all patient fields before assessing risk."
+    )
+
+    st.write(
+        "Incomplete fields:",
+        ", ".join(incomplete_fields)
+    )
+
+else:
 
         # ----------------------------------------------
         # Create patient dataframe
