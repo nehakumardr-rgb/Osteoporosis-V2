@@ -109,7 +109,6 @@ medical_conditions = st.selectbox(
     ["", "None", "Rheumatoid Arthritis", "Not Reported"]
 )
 
-
 prior_fractures = st.selectbox(
     "Prior Fractures",
     ["", "No", "Yes"]
@@ -121,70 +120,51 @@ prior_fractures = st.selectbox(
 
 if st.button("Assess Osteoporosis Risk"):
 
-    required_fields = [
-        gender,
-        hormonal_changes,
-        family_history,
-        body_weight,
-        calcium,
-        vitamin_d,
-        physical_activity,
-        smoking,
-        alcohol,
-        medical_conditions,
-        prior_fractures
-    ]
-
     incomplete_fields = []
 
-if age is None:
-    incomplete_fields.append("Age")
+    if age is None:
+        incomplete_fields.append("Age")
 
-if gender == "":
-    incomplete_fields.append("Gender")
+    if gender == "":
+        incomplete_fields.append("Gender")
 
-if hormonal_changes == "":
-    incomplete_fields.append("Hormonal Changes")
+    if gender == "Female" and hormonal_changes == "":
+        incomplete_fields.append("Hormonal Changes")
 
-if family_history == "":
-    incomplete_fields.append("Family History")
+    if family_history == "":
+        incomplete_fields.append("Family History")
 
-if body_weight == "":
-    incomplete_fields.append("Body Weight")
+    if body_weight == "":
+        incomplete_fields.append("Body Weight")
 
-if calcium == "":
-    incomplete_fields.append("Calcium Intake")
+    if calcium == "":
+        incomplete_fields.append("Calcium Intake")
 
-if vitamin_d == "":
-    incomplete_fields.append("Vitamin D Intake")
+    if vitamin_d == "":
+        incomplete_fields.append("Vitamin D Intake")
 
-if physical_activity == "":
-    incomplete_fields.append("Physical Activity")
+    if physical_activity == "":
+        incomplete_fields.append("Physical Activity")
 
-if smoking == "":
-    incomplete_fields.append("Smoking")
+    if smoking == "":
+        incomplete_fields.append("Smoking")
 
-if alcohol == "":
-    incomplete_fields.append("Alcohol Consumption")
+    if alcohol == "":
+        incomplete_fields.append("Alcohol Consumption")
 
-if medical_conditions == "":
-    incomplete_fields.append("Medical Conditions")
+    if medical_conditions == "":
+        incomplete_fields.append("Medical Conditions")
 
-if prior_fractures == "":
-    incomplete_fields.append("Prior Fractures")
+    if prior_fractures == "":
+        incomplete_fields.append("Prior Fractures")
 
-if incomplete_fields:
+    if incomplete_fields:
 
-    st.warning(
-        "Please complete all patient fields before assessing risk."
-    )
+        st.warning(
+            "Please complete all patient fields before assessing risk."
+        )
 
-    st.write(
-        "Incomplete fields:",
-        ", ".join(incomplete_fields)
-    )
-
-else:
+    else:
 
         # ----------------------------------------------
         # Create patient dataframe
