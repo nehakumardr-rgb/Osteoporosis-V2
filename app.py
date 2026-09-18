@@ -393,7 +393,7 @@ if st.button("Assess Osteoporosis Risk"):
                         f"Calcium Intake: {calcium}"
                     )
 
-                elif feature == "Vitamin D Intake_Sufficient":
+                 elif feature == "Vitamin D Intake_Sufficient":
 
                     display_feature = (
                         f"Vitamin D Intake: {vitamin_d}"
