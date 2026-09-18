@@ -135,11 +135,11 @@ if st.button("Assess Osteoporosis Risk"):
         prior_fractures
     ]
 
-    if age is None or "" in required_fields:
+    if age is None or any(field == "" for field in required_fields):
 
-        st.warning(
-            "Please complete all patient fields before assessing risk."
-        )
+    st.warning(
+        "Please complete all patient fields before assessing risk."
+    )
 
     else:
 
