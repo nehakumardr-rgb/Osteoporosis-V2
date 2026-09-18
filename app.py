@@ -176,16 +176,17 @@ if st.button("Assess Osteoporosis Risk"):
         # ----------------------------------------------
 
         patient_processed = pd.DataFrame(
-            0,
+            0.0,
             index=[0],
-            columns=model_features
+            columns=model_features,
+            dtype=float
         )
 
         for feature in model_features:
 
             if feature in patient_encoded.columns:
 
-                patient_processed.loc[0, feature] = (
+                patient_processed.loc[0, feature] = float(
                     patient_encoded.loc[0, feature]
                 )
 
@@ -196,7 +197,6 @@ if st.button("Assess Osteoporosis Risk"):
         patient_processed["Age"] = scaler.transform(
             patient_processed[["Age"]]
         ).ravel()
-
         # ----------------------------------------------
         # Model prediction
         # ----------------------------------------------
