@@ -363,12 +363,17 @@ if st.button("Assess Osteoporosis Risk"):
                     display_feature = f"Age: {age}"
 
                 elif feature == "Gender_Male":
+
                     display_feature = f"Gender: {gender}"
 
                 elif feature == "Hormonal Changes_Postmenopausal":
+
                     if gender == "Male":
                         continue
-                    display_feature = f"Hormonal Changes: {hormonal_changes}"
+
+                    display_feature = (
+                        f"Hormonal Changes: {hormonal_changes}"
+                    )
 
                 elif feature == "Family History_Yes":
 
@@ -388,19 +393,19 @@ if st.button("Assess Osteoporosis Risk"):
                         f"Calcium Intake: {calcium}"
                     )
 
-                 elif feature == "Vitamin D Intake_Sufficient":
+                elif feature == "Vitamin D Intake_Sufficient":
 
                     display_feature = (
                         f"Vitamin D Intake: {vitamin_d}"
                     )
 
-                 elif feature == "Physical Activity_Sedentary":
+                elif feature == "Physical Activity_Sedentary":
 
                     display_feature = (
                         f"Physical Activity: {physical_activity}"
                     )
 
-                 elif feature == "Smoking_Yes":
+                elif feature == "Smoking_Yes":
 
                     display_feature = (
                         f"Smoking: {smoking}"
