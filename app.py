@@ -18,7 +18,6 @@ model_features = joblib.load("osteoporosis_features.pkl")
 
 st.set_page_config(
     page_title="Osteoporosis Risk Assessment",
-    page_icon="🦴",
     layout="centered"
 )
 
@@ -29,12 +28,12 @@ st.set_page_config(
 st.title("🦴 Osteoporosis Risk Assessment")
 
 st.write(
-    "A prototype AI-based clinical decision-support tool "
+    "AI-based clinical decision-support tool "
     "for estimating osteoporosis risk from patient characteristics."
 )
 
 st.info(
-    "This is an AI/ML prototype for educational and demonstration "
+    "This is an AI/ML prototype for demonstration "
     "purposes. It is not a diagnostic tool and should not replace "
     "clinical assessment or professional medical advice."
 )
