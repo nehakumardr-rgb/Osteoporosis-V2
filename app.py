@@ -340,65 +340,140 @@ if st.button("Assess Osteoporosis Risk"):
             # Top contributing factors
             # ----------------------------------------------
 
-            st.subheader("Top contributing factors")
+            # ----------------------------------------------
+# Top contributing factors
+# ----------------------------------------------
 
-            top_features = explanation_df.head(5)
+st.subheader("Top contributing factors")
 
-            for _, row in top_features.iterrows():
+# Remove the technical Medications feature from the
+# patient-facing explanation because it is not entered
+# by the user and is set to "Not Reported" internally.
 
-                feature = row["Feature"]
-                shap_value = row["SHAP Value"]
-                patient_value = row["Patient Value"]
+display_df = explanation_df[
+    explanation_df["Feature"] != "Medications_Not Reported"
+]
 
-                if "_" in feature:
+top_features = display_df.head(5)
 
-                    base_feature, category = feature.split(
-                        "_", 1
-                    )
+for _, row in top_features.iterrows():
 
-                    if patient_value == 1:
+    feature = row["Feature"]
+    shap_value = row["SHAP Value"]
 
-                        display_feature = (
-                            f"{base_feature}: {category}"
-                        )
+    # ----------------------------------------------
+    # Convert model feature names into patient-friendly
+    # descriptions using the actual patient inputs
+    # ----------------------------------------------
 
-                    else:
+    if feature == "Age":
 
-                        display_feature = (
-                            f"{base_feature}: "
-                            f"{category} not present"
-                        )
+        display_feature = f"Age: {age}"
 
-                else:
+    elif feature == "Gender_Male":
 
-                    display_feature = feature
+        display_feature = f"Gender: {gender}"
 
-                if shap_value > 0:
+    elif feature == "Hormonal Changes_Postmenopausal":
 
-                    st.markdown(
-                        f'<span style="color:red; '
-                        f'font-size:20px;">↑</span> '
-                        f'**{display_feature}** — '
-                        f'contributed toward higher predicted risk',
-                        unsafe_allow_html=True
-                    )
+        display_feature = (
+            f"Hormonal Changes: {hormonal_changes}"
+        )
 
-                elif shap_value < 0:
+    elif feature == "Family History_Yes":
 
-                    st.markdown(
-                        f'<span style="color:green; '
-                        f'font-size:20px;">↓</span> '
-                        f'**{display_feature}** — '
-                        f'contributed toward lower predicted risk',
-                        unsafe_allow_html=True
-                    )
+        display_feature = (
+            f"Family History: {family_history}"
+        )
 
-                else:
+    elif feature == "Body Weight_Underweight":
 
-                    st.write(
-                        f"• **{display_feature}** — "
-                        f"minimal contribution"
-                    )
+        display_feature = (
+            f"Body Weight: {body_weight}"
+        )
+
+    elif feature == "Calcium Intake_Low":
+
+        display_feature = (
+            f"Calcium Intake: {calcium}"
+        )
+
+    elif feature == "Vitamin D Intake_Sufficient":
+
+        display_feature = (
+            f"Vitamin D Intake: {vitamin_d}"
+        )
+
+    elif feature == "Physical Activity_Sedentary":
+
+        display_feature = (
+            f"Physical Activity: {physical_activity}"
+        )
+
+    elif feature == "Smoking_Yes":
+
+        display_feature = (
+            f"Smoking: {smoking}"
+        )
+
+    elif feature == "Alcohol Consumption_Not Reported":
+
+        display_feature = (
+            f"Alcohol Consumption: {alcohol}"
+        )
+
+    elif feature == "Medical Conditions_Not Reported":
+
+        display_feature = (
+            f"Medical Conditions: {medical_conditions}"
+        )
+
+    elif feature == "Medical Conditions_Rheumatoid Arthritis":
+
+        display_feature = (
+            f"Medical Conditions: {medical_conditions}"
+        )
+
+    elif feature == "Prior Fractures_Yes":
+
+        display_feature = (
+            f"Prior Fractures: {prior_fractures}"
+        )
+
+    else:
+
+        display_feature = feature
+
+    # ----------------------------------------------
+    # Display direction of contribution
+    # ----------------------------------------------
+
+    if shap_value > 0:
+
+        st.markdown(
+            f'<span style="color:red; '
+            f'font-size:20px;">↑</span> '
+            f'**{display_feature}** — '
+            f'contributed toward higher predicted risk',
+            unsafe_allow_html=True
+        )
+
+    elif shap_value < 0:
+
+        st.markdown(
+            f'<span style="color:green; '
+            f'font-size:20px;">↓</span> '
+            f'**{display_feature}** — '
+            f'contributed toward lower predicted risk',
+            unsafe_allow_html=True
+        )
+
+    else:
+
+        st.write(
+            f"• **{display_feature}** — "
+            f"minimal contribution"
+        )
 
             # ----------------------------------------------
             # SHAP bar chart
