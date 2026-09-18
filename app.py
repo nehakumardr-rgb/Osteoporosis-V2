@@ -109,10 +109,6 @@ medical_conditions = st.selectbox(
     ["", "None", "Rheumatoid Arthritis", "Not Reported"]
 )
 
-medications = st.selectbox(
-    "Medications",
-    ["", "None", "Not Reported"]
-)
 
 prior_fractures = st.selectbox(
     "Prior Fractures",
@@ -136,7 +132,6 @@ if st.button("Assess Osteoporosis Risk"):
         smoking,
         alcohol,
         medical_conditions,
-        medications,
         prior_fractures
     ]
 
@@ -164,7 +159,7 @@ if st.button("Assess Osteoporosis Risk"):
             "Smoking": smoking,
             "Alcohol Consumption": alcohol,
             "Medical Conditions": medical_conditions,
-            "Medications": medications,
+            "Medications": "Not Reported",
             "Prior Fractures": prior_fractures
         }])
 
