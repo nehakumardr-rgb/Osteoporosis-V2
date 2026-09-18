@@ -289,210 +289,210 @@ if st.button("Assess Osteoporosis Risk"):
         # SHAP Explanation
         # --------------------------------------------------
 
-        st.header("3. Why did the model make this prediction?")
+        # --------------------------------------------------
+# SHAP Explanation
+# --------------------------------------------------
 
-        st.write(
-            "SHAP (SHapley Additive exPlanations) is used to "
-            "show which patient characteristics contributed "
-            "most to the model's prediction."
-        )
+st.header("3. Why did the model make this prediction?")
 
-        try:
+st.write(
+    "SHAP (SHapley Additive exPlanations) is used to "
+    "show which patient characteristics contributed "
+    "most to the model's prediction."
+)
 
-            # ----------------------------------------------
-            # Calculate SHAP values
-            # ----------------------------------------------
-
-            explainer = shap.TreeExplainer(model)
-
-            shap_values = explainer.shap_values(
-                patient_processed
-            )
-
-            if isinstance(shap_values, list):
-
-                shap_for_patient = shap_values[1][0]
-
-            else:
-
-                shap_for_patient = shap_values[0]
-
-            # ----------------------------------------------
-            # Create explanation dataframe
-            # ----------------------------------------------
-
-            explanation_df = pd.DataFrame({
-                "Feature": model_features,
-                "SHAP Value": shap_for_patient,
-                "Patient Value": patient_processed.iloc[0].values
-            })
-
-            explanation_df["Absolute SHAP"] = (
-                explanation_df["SHAP Value"].abs()
-            )
-
-            explanation_df = explanation_df.sort_values(
-                "Absolute SHAP",
-                ascending=False
-            )
-
-            # ----------------------------------------------
-            # Top contributing factors
-            # ----------------------------------------------
-
-            # ----------------------------------------------
-# Top contributing factors
-# ----------------------------------------------
-
-st.subheader("Top contributing factors")
-
-# Remove the technical Medications feature from the
-# patient-facing explanation because it is not entered
-# by the user and is set to "Not Reported" internally.
-
-display_df = explanation_df[
-    explanation_df["Feature"] != "Medications_Not Reported"
-]
-
-top_features = display_df.head(5)
-
-for _, row in top_features.iterrows():
-
-    feature = row["Feature"]
-    shap_value = row["SHAP Value"]
+try:
 
     # ----------------------------------------------
-    # Convert model feature names into patient-friendly
-    # descriptions using the actual patient inputs
+    # Calculate SHAP values
     # ----------------------------------------------
 
-    if feature == "Age":
+    explainer = shap.TreeExplainer(model)
 
-        display_feature = f"Age: {age}"
+    shap_values = explainer.shap_values(
+        patient_processed
+    )
 
-    elif feature == "Gender_Male":
+    if isinstance(shap_values, list):
 
-        display_feature = f"Gender: {gender}"
-
-    elif feature == "Hormonal Changes_Postmenopausal":
-
-        display_feature = (
-            f"Hormonal Changes: {hormonal_changes}"
-        )
-
-    elif feature == "Family History_Yes":
-
-        display_feature = (
-            f"Family History: {family_history}"
-        )
-
-    elif feature == "Body Weight_Underweight":
-
-        display_feature = (
-            f"Body Weight: {body_weight}"
-        )
-
-    elif feature == "Calcium Intake_Low":
-
-        display_feature = (
-            f"Calcium Intake: {calcium}"
-        )
-
-    elif feature == "Vitamin D Intake_Sufficient":
-
-        display_feature = (
-            f"Vitamin D Intake: {vitamin_d}"
-        )
-
-    elif feature == "Physical Activity_Sedentary":
-
-        display_feature = (
-            f"Physical Activity: {physical_activity}"
-        )
-
-    elif feature == "Smoking_Yes":
-
-        display_feature = (
-            f"Smoking: {smoking}"
-        )
-
-    elif feature == "Alcohol Consumption_Not Reported":
-
-        display_feature = (
-            f"Alcohol Consumption: {alcohol}"
-        )
-
-    elif feature == "Medical Conditions_Not Reported":
-
-        display_feature = (
-            f"Medical Conditions: {medical_conditions}"
-        )
-
-    elif feature == "Medical Conditions_Rheumatoid Arthritis":
-
-        display_feature = (
-            f"Medical Conditions: {medical_conditions}"
-        )
-
-    elif feature == "Prior Fractures_Yes":
-
-        display_feature = (
-            f"Prior Fractures: {prior_fractures}"
-        )
+        shap_for_patient = shap_values[1][0]
 
     else:
 
-        display_feature = feature
+        shap_for_patient = shap_values[0]
 
     # ----------------------------------------------
-    # Display direction of contribution
+    # Create explanation dataframe
     # ----------------------------------------------
 
-    if shap_value > 0:
+    explanation_df = pd.DataFrame({
+        "Feature": model_features,
+        "SHAP Value": shap_for_patient,
+        "Patient Value": patient_processed.iloc[0].values
+    })
 
-        st.markdown(
-            f'<span style="color:red; '
-            f'font-size:20px;">↑</span> '
-            f'**{display_feature}** — '
-            f'contributed toward higher predicted risk',
-            unsafe_allow_html=True
-        )
+    explanation_df["Absolute SHAP"] = (
+        explanation_df["SHAP Value"].abs()
+    )
 
-    elif shap_value < 0:
+    explanation_df = explanation_df.sort_values(
+        "Absolute SHAP",
+        ascending=False
+    )
 
-        st.markdown(
-            f'<span style="color:green; '
-            f'font-size:20px;">↓</span> '
-            f'**{display_feature}** — '
-            f'contributed toward lower predicted risk',
-            unsafe_allow_html=True
-        )
+    # ----------------------------------------------
+    # Top contributing factors
+    # ----------------------------------------------
 
-    else:
+    st.subheader("Top contributing factors")
 
-        st.write(
-            f"• **{display_feature}** — "
-            f"minimal contribution"
-        )
+    # Do not show the medication placeholder
+    # in the patient-facing explanation.
 
-            # ----------------------------------------------
-            # SHAP bar chart
-            # ----------------------------------------------
+    display_df = explanation_df[
+        explanation_df["Feature"] != "Medications_Not Reported"
+    ]
 
-            st.subheader("Model feature contributions")
+    top_features = display_df.head(5)
 
-            chart_df = explanation_df.head(10)[
-                ["Feature", "SHAP Value"]
-            ].set_index("Feature")
+    for _, row in top_features.iterrows():
 
-            st.bar_chart(chart_df)
+        feature = row["Feature"]
+        shap_value = row["SHAP Value"]
 
-        except Exception:
+        # ------------------------------------------
+        # Convert technical model features into
+        # patient-friendly descriptions
+        # ------------------------------------------
 
-            st.warning(
-                "SHAP explanation could not be generated "
-                "for this prediction."
+        if feature == "Age":
+
+            display_feature = f"Age: {age}"
+
+        elif feature == "Gender_Male":
+
+            display_feature = f"Gender: {gender}"
+
+        elif feature == "Hormonal Changes_Postmenopausal":
+
+            display_feature = (
+                f"Hormonal Changes: {hormonal_changes}"
             )
+
+        elif feature == "Family History_Yes":
+
+            display_feature = (
+                f"Family History: {family_history}"
+            )
+
+        elif feature == "Body Weight_Underweight":
+
+            display_feature = (
+                f"Body Weight: {body_weight}"
+            )
+
+        elif feature == "Calcium Intake_Low":
+
+            display_feature = (
+                f"Calcium Intake: {calcium}"
+            )
+
+        elif feature == "Vitamin D Intake_Sufficient":
+
+            display_feature = (
+                f"Vitamin D Intake: {vitamin_d}"
+            )
+
+        elif feature == "Physical Activity_Sedentary":
+
+            display_feature = (
+                f"Physical Activity: {physical_activity}"
+            )
+
+        elif feature == "Smoking_Yes":
+
+            display_feature = (
+                f"Smoking: {smoking}"
+            )
+
+        elif feature == "Alcohol Consumption_Not Reported":
+
+            display_feature = (
+                f"Alcohol Consumption: {alcohol}"
+            )
+
+        elif feature == "Medical Conditions_Not Reported":
+
+            display_feature = (
+                f"Medical Conditions: {medical_conditions}"
+            )
+
+        elif feature == "Medical Conditions_Rheumatoid Arthritis":
+
+            display_feature = (
+                f"Medical Conditions: {medical_conditions}"
+            )
+
+        elif feature == "Prior Fractures_Yes":
+
+            display_feature = (
+                f"Prior Fractures: {prior_fractures}"
+            )
+
+        else:
+
+            display_feature = feature
+
+        # ------------------------------------------
+        # Display direction of contribution
+        # ------------------------------------------
+
+        if shap_value > 0:
+
+            st.markdown(
+                f'<span style="color:red; '
+                f'font-size:20px;">↑</span> '
+                f'**{display_feature}** — '
+                f'contributed toward higher predicted risk',
+                unsafe_allow_html=True
+            )
+
+        elif shap_value < 0:
+
+            st.markdown(
+                f'<span style="color:green; '
+                f'font-size:20px;">↓</span> '
+                f'**{display_feature}** — '
+                f'contributed toward lower predicted risk',
+                unsafe_allow_html=True
+            )
+
+        else:
+
+            st.write(
+                f"• **{display_feature}** — "
+                f"minimal contribution"
+            )
+
+    # ----------------------------------------------
+    # SHAP bar chart
+    # ----------------------------------------------
+
+    st.subheader("Model feature contributions")
+
+    chart_df = explanation_df.head(10)[
+        ["Feature", "SHAP Value"]
+    ].set_index("Feature")
+
+    st.bar_chart(chart_df)
+
+except Exception:
+
+    st.warning(
+        "SHAP explanation could not be generated "
+        "for this prediction."
+    )
+
 
         # --------------------------------------------------
         # DXA consideration
