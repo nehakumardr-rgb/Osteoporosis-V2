@@ -368,7 +368,10 @@ if st.button("Assess Osteoporosis Risk"):
 
                 elif feature == "Hormonal Changes_Postmenopausal":
 
-                    display_feature = (
+                if gender == "Male":
+                continue
+
+                display_feature = (
                         f"Hormonal Changes: {hormonal_changes}"
                     )
 
